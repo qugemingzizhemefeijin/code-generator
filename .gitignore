@@ -9,12 +9,13 @@ target/
 # gradle ignore
 .gradle/
 gradle/
+out/
 
 # eclipse ignore
 .settings/
 .project
 .classpath
-*/build/
+build/
 
 # idea ignore
 .idea/

@@ -15,8 +15,8 @@ import org.apache.commons.io.FileUtils;
 import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.net.URISyntaxException;
 import java.net.URL;
-import java.nio.file.FileSystems;
 import java.util.*;
 
 public class FreeMarkerHandler {
@@ -25,7 +25,7 @@ public class FreeMarkerHandler {
 
     private static final String ENCODING = ECharset.UTF_8.getName();
 
-    private static final String TEMPLATE_DIRECTORY = "/out/production/code-generator_main/";
+    private static final String TEMPLATE_DIRECTORY = "mybatis";
 
     private static final String corePackage = "com.tigerjoys.nbs.mybatis.core";
 
@@ -39,9 +39,11 @@ public class FreeMarkerHandler {
         try {
             URL rootURL = CodeBuilderUtils.class.getResource("/");
 
-            freemarkerCfg.setDirectoryForTemplateLoading(new File(FileSystems.getDefault().getPath("").toFile().getAbsoluteFile() + TEMPLATE_DIRECTORY));
+            freemarkerCfg.setDirectoryForTemplateLoading(new File(JPAFreeMarkerHandler.class.getClassLoader().getResource(TEMPLATE_DIRECTORY).toURI()));
             freemarkerCfg.setEncoding(Locale.getDefault(), ENCODING);
         } catch (IOException e) {
+            e.printStackTrace();
+        } catch (URISyntaxException e) {
             e.printStackTrace();
         }
     }
@@ -112,7 +114,7 @@ public class FreeMarkerHandler {
 
         Template template = null;
         try {
-            template = freemarkerCfg.getTemplate("mybatis/mapper_xml.tpl");
+            template = freemarkerCfg.getTemplate("/mapper_xml.tpl");
             template.setEncoding(ENCODING);
         } catch (IOException e) {
             e.printStackTrace();
@@ -156,7 +158,7 @@ public class FreeMarkerHandler {
 
         Template template = null;
         try {
-            template = freemarkerCfg.getTemplate("mybatis/java_mapper.tpl");
+            template = freemarkerCfg.getTemplate("/java_mapper.tpl");
             template.setEncoding(ENCODING);
         } catch (IOException e) {
             e.printStackTrace();
@@ -214,7 +216,7 @@ public class FreeMarkerHandler {
 
         Template template = null;
         try {
-            template = freemarkerCfg.getTemplate("mybatis/java_service_imp.tpl");
+            template = freemarkerCfg.getTemplate("/java_service_imp.tpl");
             template.setEncoding(ENCODING);
         } catch (IOException e) {
             e.printStackTrace();
@@ -263,7 +265,7 @@ public class FreeMarkerHandler {
 
         Template template = null;
         try {
-            template = freemarkerCfg.getTemplate("mybatis/java_service.tpl");
+            template = freemarkerCfg.getTemplate("/java_service.tpl");
             template.setEncoding(ENCODING);
         } catch (IOException e) {
             e.printStackTrace();
@@ -312,7 +314,7 @@ public class FreeMarkerHandler {
 
         Template template = null;
         try {
-            template = freemarkerCfg.getTemplate("mybatis/java_bean.tpl");
+            template = freemarkerCfg.getTemplate("/java_bean.tpl");
             template.setEncoding(ENCODING);
         } catch (IOException e) {
             e.printStackTrace();

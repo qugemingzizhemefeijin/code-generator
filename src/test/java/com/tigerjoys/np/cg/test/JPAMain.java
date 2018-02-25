@@ -15,7 +15,7 @@ public class JPAMain {
 			JPAFreeMarkerHandler.makeFiles(table, "chengang", directory ,ElephantAgentService.class);
 		}
 	}
-	
+
 	/**
 	 * 用户文件保存的相对路径
 	 * @return String

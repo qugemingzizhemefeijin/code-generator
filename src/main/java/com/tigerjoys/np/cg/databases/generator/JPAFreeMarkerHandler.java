@@ -14,7 +14,7 @@ import org.apache.commons.io.FileUtils;
 import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
-import java.nio.file.FileSystems;
+import java.net.URISyntaxException;
 import java.util.*;
 
 public class JPAFreeMarkerHandler {
@@ -23,7 +23,7 @@ public class JPAFreeMarkerHandler {
 
     private static final String ENCODING = ECharset.UTF_8.getName();
 
-    private static final String TEMPLATE_DIRECTORY = "/out/production/code-generator_main/";
+    private static final String TEMPLATE_DIRECTORY = "jpa";
 
     private static final String corePackage = "com.tigerjoys.elephant.agent.basic";
 
@@ -32,10 +32,12 @@ public class JPAFreeMarkerHandler {
     static {
         freemarkerCfg = new Configuration(new Version(FREEMARKER_VERSION));
         try {
-            freemarkerCfg.setDirectoryForTemplateLoading(new File(FileSystems.getDefault().getPath("").toAbsolutePath() + TEMPLATE_DIRECTORY));
+            freemarkerCfg.setDirectoryForTemplateLoading(new File(JPAFreeMarkerHandler.class.getClassLoader().getResource(TEMPLATE_DIRECTORY).toURI()));
             freemarkerCfg.setEncoding(Locale.getDefault(), ENCODING);
             freemarkerCfg.setNumberFormat("#");
         } catch (IOException e) {
+            e.printStackTrace();
+        } catch (URISyntaxException e) {
             e.printStackTrace();
         }
     }
@@ -105,7 +107,7 @@ public class JPAFreeMarkerHandler {
 
         Template template = null;
         try {
-            template = freemarkerCfg.getTemplate("jpa/jpa_repository.tpl");
+            template = freemarkerCfg.getTemplate("/jpa_repository.tpl");
             template.setEncoding(ENCODING);
         } catch (IOException e) {
             e.printStackTrace();
@@ -166,7 +168,7 @@ public class JPAFreeMarkerHandler {
 
         Template template = null;
         try {
-            template = freemarkerCfg.getTemplate("jpa/jpa_java_bean.tpl");
+            template = freemarkerCfg.getTemplate("/jpa_java_bean.tpl");
             template.setEncoding(ENCODING);
         } catch (IOException e) {
             e.printStackTrace();
@@ -244,7 +246,7 @@ public class JPAFreeMarkerHandler {
 
         Template template = null;
         try {
-            template = freemarkerCfg.getTemplate("jpa/jpa_java_key_bean.tpl");
+            template = freemarkerCfg.getTemplate("/jpa_java_key_bean.tpl");
             template.setEncoding(ENCODING);
         } catch (IOException e) {
             e.printStackTrace();
