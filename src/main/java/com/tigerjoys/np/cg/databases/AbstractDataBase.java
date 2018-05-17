@@ -59,7 +59,7 @@ public abstract class AbstractDataBase {
 	public abstract String getPackageName();
 	
 	/**
-	 * 获得XML的目录
+	 * 获得XML的目录,Mybatis专用
 	 * @return String
 	 */
 	public abstract String getXmlFolder();
