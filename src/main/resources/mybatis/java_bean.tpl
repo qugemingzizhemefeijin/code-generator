@@ -4,7 +4,7 @@ import java.io.Serializable;
 <#list importPackageSet as clazz>
 import ${clazz};
 </#list>
-import ${corePackage}.BaseEntity;
+import ${entityClassName};
 
 /**
  * 数据库中  ${tableBean.table_comment}[${tableName}] 表对应的实体类

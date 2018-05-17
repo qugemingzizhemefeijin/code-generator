@@ -59,10 +59,18 @@ public abstract class AbstractDataBase {
 	public abstract String getPackageName();
 	
 	/**
+	 * 获得BaseEntity的类路径
+	 * @return String
+	 */
+	public abstract String getBaseEntityClassName();
+	
+	/**
 	 * 获得XML的目录,Mybatis专用
 	 * @return String
 	 */
-	public abstract String getXmlFolder();
+	public String getXmlFolder() {
+        return "service";
+    }
 	
 	/**
 	 * 数据库连接

@@ -17,10 +17,9 @@ public class ElephantAgentService extends AbstractDataBase {
     public String getPackageName() {
         return "com.tt.ee.agent.inter";
     }
-
-    @Override
-    public String getXmlFolder() {
-        return "service";
+    
+    public String getBaseEntityClassName() {
+    	return "com.tigerjoys.elephant.agent.basic.BaseEntity";
     }
 
 }

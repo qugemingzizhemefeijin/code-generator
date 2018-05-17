@@ -17,6 +17,10 @@ public class SharkMiaiService extends AbstractDataBase {
     public String getPackageName() {
         return "com.tt.ss.mm.inter";
     }
+    
+    public String getBaseEntityClassName() {
+    	return "com.tigerjoys.nbs.mybatis.core.BaseEntity";
+    }
 
     @Override
     public String getXmlFolder() {

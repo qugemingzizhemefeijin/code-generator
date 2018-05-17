@@ -92,6 +92,7 @@ public class JPAFreeMarkerHandler {
         info.setTableBean(tableBean);
         info.setIndexList(indexList);
         info.setIndexUniqueList(uniqueIndexlist);
+        info.setBaseEntityClassName(database.getBaseEntityClassName());
 
         makeJavaBean(info);
         makeRepository(info);
@@ -226,6 +227,7 @@ public class JPAFreeMarkerHandler {
         dataModel.put("isIdColumn", isIdColumn ? 1 : 0);
         dataModel.put("packageName", info.getPackageName());
         dataModel.put("corePackage", corePackage);
+        dataModel.put("entityClassName", info.getBaseEntityClassName());
 
         if (!onePrimaryField) {
             makeJavaPrimaryKey(info);

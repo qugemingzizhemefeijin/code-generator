@@ -1,23 +1,33 @@
 package com.tigerjoys.np.cg.databases.generator;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.StringWriter;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Set;
+
+import org.apache.commons.io.FileUtils;
+
 import com.tigerjoys.np.cg.databases.AbstractDataBase;
 import com.tigerjoys.np.cg.databases.CodeBuilderUtils;
 import com.tigerjoys.np.cg.databases.DataBaseFactory;
 import com.tigerjoys.np.cg.databases.util.ECharset;
 import com.tigerjoys.np.cg.databases.util.FileUtil;
 import com.tigerjoys.np.cg.databases.util.Tools;
+
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import freemarker.template.Version;
-import org.apache.commons.io.FileUtils;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.StringWriter;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.util.*;
 
 public class FreeMarkerHandler {
 
@@ -92,6 +102,7 @@ public class FreeMarkerHandler {
         info.setPrimaryColumnList(primaryColumnList);
         info.setTable_name(table_name);
         info.setTableBean(tableBean);
+        info.setBaseEntityClassName(database.getBaseEntityClassName());
 
         makeJavaBean(info);
         makeContract(info);
@@ -360,6 +371,7 @@ public class FreeMarkerHandler {
         dataModel.put("isIdColumn", isIdColumn ? 1 : 0);
         dataModel.put("packageName", info.getPackageName());
         dataModel.put("corePackage", corePackage);
+        dataModel.put("entityClassName", info.getBaseEntityClassName());
 
         String targetFilePath = System.getProperty("user.home") + "/" + info.getDirectory() + "/entity/" + info.getBeanName() + "Entity.java";
         boolean b = makeFile(template, targetFilePath, dataModel);

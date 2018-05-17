@@ -50,6 +50,11 @@ public class TableInfo {
 	private String packageName;
 	
 	/**
+	 * 基础的Entity类路径
+	 */
+	private String baseEntityClassName;
+	
+	/**
 	 * 主键字段列表
 	 */
 	private List<TableColumnBean> primaryColumnList;
@@ -132,6 +137,14 @@ public class TableInfo {
 
 	public void setIndexUniqueList(List<TableIndexBean> indexUniqueList) {
 		this.indexUniqueList = indexUniqueList;
+	}
+
+	public String getBaseEntityClassName() {
+		return baseEntityClassName;
+	}
+
+	public void setBaseEntityClassName(String baseEntityClassName) {
+		this.baseEntityClassName = baseEntityClassName;
 	}
 
 }

@@ -2,7 +2,7 @@ package com.tigerjoys.np.cg.test;
 
 import com.tigerjoys.np.cg.databases.generator.FreeMarkerHandler;
 import com.tigerjoys.np.cg.databases.generator.JPAFreeMarkerHandler;
-import com.tigerjoys.np.cg.databases.impl.ElephantAgentService;
+import com.tigerjoys.np.cg.databases.impl.OdpDataCodeService;
 
 public class JPAMain {
 
@@ -10,9 +10,9 @@ public class JPAMain {
 		String directory = getDirName();
 		FreeMarkerHandler.deleteFile(System.getProperty("user.home")+"\\"+directory);
 
-		String[] ss = new String[]{"t_error_login_log"};
+		String[] ss = new String[]{"adv_aduit_log"};
 		for(String table : ss) {
-			JPAFreeMarkerHandler.makeFiles(table, "chengang", directory ,ElephantAgentService.class);
+			JPAFreeMarkerHandler.makeFiles(table, "chengang", directory ,OdpDataCodeService.class);
 		}
 	}
 
