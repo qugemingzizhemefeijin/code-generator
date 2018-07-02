@@ -10,7 +10,7 @@ public class JPAMain {
 		String directory = getDirName();
 		FreeMarkerHandler.deleteFile(System.getProperty("user.home")+"\\"+directory);
 
-		String[] ss = new String[]{"adv_aduit_log"};
+		String[] ss = new String[]{"user_info"};
 		for(String table : ss) {
 			JPAFreeMarkerHandler.makeFiles(table, "chengang", directory ,OdpDataCodeService.class);
 		}

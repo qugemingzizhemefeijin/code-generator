@@ -5,7 +5,7 @@ import com.tigerjoys.np.cg.databases.AbstractDataBase;
 public class OdpDataCodeService extends AbstractDataBase {
 
 	public OdpDataCodeService() {
-		super("ssp","sss","sss","127.0.0.1",3306);
+		super("ssp","111","111","111",3306);
 	}
 
 	@Override

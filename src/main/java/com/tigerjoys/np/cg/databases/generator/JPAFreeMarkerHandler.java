@@ -1,21 +1,31 @@
 package com.tigerjoys.np.cg.databases.generator;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.StringWriter;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Set;
+
+import org.apache.commons.io.FileUtils;
+
 import com.tigerjoys.np.cg.databases.AbstractDataBase;
 import com.tigerjoys.np.cg.databases.DataBaseFactory;
 import com.tigerjoys.np.cg.databases.util.ECharset;
 import com.tigerjoys.np.cg.databases.util.FileUtil;
 import com.tigerjoys.np.cg.databases.util.Tools;
+
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import freemarker.template.Version;
-import org.apache.commons.io.FileUtils;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.StringWriter;
-import java.net.URISyntaxException;
-import java.util.*;
 
 public class JPAFreeMarkerHandler {
 
@@ -41,8 +51,12 @@ public class JPAFreeMarkerHandler {
             e.printStackTrace();
         }
     }
-
+    
     public static <T extends AbstractDataBase> boolean makeFiles(String table_name, String author, String directory, Class<T> clazz) {
+    	return makeFiles(table_name, author, directory, clazz, false);
+    }
+
+    public static <T extends AbstractDataBase> boolean makeFiles(String table_name, String author, String directory, Class<T> clazz , boolean lazy) {
         if (Tools.isNull(directory)) {
             throw new RuntimeException("请填写文件保存的目录名称");
         }
@@ -61,7 +75,7 @@ public class JPAFreeMarkerHandler {
             return false;
         }
 
-        List<TableColumnBean> columnList = QueryFactory.getColumnBeanList(table_name, database, false);
+        List<TableColumnBean> columnList = QueryFactory.getColumnBeanList(table_name, database, false , 1);
         if (Tools.isNull(columnList)) {
             throw new NoSuchElementException("没有查找到指定数据库的字段集合");
         }
@@ -94,7 +108,7 @@ public class JPAFreeMarkerHandler {
         info.setIndexUniqueList(uniqueIndexlist);
         info.setBaseEntityClassName(database.getBaseEntityClassName());
 
-        makeJavaBean(info);
+        makeJavaBean(info , lazy);
         makeRepository(info);
 
         System.err.println("============================================================================");
@@ -163,7 +177,7 @@ public class JPAFreeMarkerHandler {
         return b;
     }
 
-    private static boolean makeJavaBean(TableInfo info) {
+    private static boolean makeJavaBean(TableInfo info , boolean lazy) {
         System.err.println("生成 JAVA BEAN");
         long startTime = System.currentTimeMillis();
 
@@ -182,6 +196,25 @@ public class JPAFreeMarkerHandler {
         }
         if (checkToTime(info.getColumnList())) {
             importPackageSet.add("java.sql.Time");
+        }
+        //是否有lob字段
+        boolean islob = checkToLob(info.getColumnList());
+        //是否支持懒加载
+        boolean isLazy = false;
+        if(islob && lazy) {
+        	isLazy = true;
+        }
+        
+        if(islob) {
+        	importPackageSet.add("javax.persistence.Lob");
+        	importPackageSet.add("com.fasterxml.jackson.annotation.JsonIgnore");
+        	if(isLazy) {
+        		importPackageSet.add("javax.persistence.Transient");
+        		importPackageSet.add("org.hibernate.bytecode.internal.javassist.FieldHandled");
+        		importPackageSet.add("org.hibernate.bytecode.internal.javassist.FieldHandler");
+        		importPackageSet.add("javax.persistence.Basic");
+        		importPackageSet.add("javax.persistence.FetchType");
+        	}
         }
 
         //判断是否是多个主键
@@ -228,6 +261,7 @@ public class JPAFreeMarkerHandler {
         dataModel.put("packageName", info.getPackageName());
         dataModel.put("corePackage", corePackage);
         dataModel.put("entityClassName", info.getBaseEntityClassName());
+        dataModel.put("isLazy", isLazy?1:0);
 
         if (!onePrimaryField) {
             makeJavaPrimaryKey(info);
@@ -320,6 +354,18 @@ public class JPAFreeMarkerHandler {
         String[] checkDateType = new String[]{"time"};
         for (TableColumnBean t : list) {
             if (checkData(t.getData_type(), checkDateType)) {
+                b = true;
+                break;
+            }
+        }
+
+        return b;
+    }
+    
+    private static boolean checkToLob(List<TableColumnBean> list) {
+    	boolean b = false;
+        for (TableColumnBean t : list) {
+            if (t.isIslob()) {
                 b = true;
                 break;
             }

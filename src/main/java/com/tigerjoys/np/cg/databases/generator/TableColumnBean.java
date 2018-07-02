@@ -1,8 +1,8 @@
 package com.tigerjoys.np.cg.databases.generator;
 
-import com.tigerjoys.np.cg.databases.util.JsonHelper;
-
 import java.io.Serializable;
+
+import com.tigerjoys.np.cg.databases.util.JsonHelper;
 
 public class TableColumnBean implements Serializable {
 
@@ -95,6 +95,11 @@ public class TableColumnBean implements Serializable {
 	 * 是否自增
 	 */
 	private boolean auto_increment;
+	
+	/**
+	 * 是否是blob或者clob类型
+	 */
+	private boolean islob;
 
 	public String getTable_schema() {
 		return table_schema;
@@ -230,6 +235,14 @@ public class TableColumnBean implements Serializable {
 
 	public void setProfile_name(String profile_name) {
 		this.profile_name = profile_name;
+	}
+
+	public boolean isIslob() {
+		return islob;
+	}
+
+	public void setIslob(boolean islob) {
+		this.islob = islob;
 	}
 
 	@Override

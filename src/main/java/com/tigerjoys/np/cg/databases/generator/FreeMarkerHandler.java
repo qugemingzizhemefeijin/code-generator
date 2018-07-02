@@ -77,7 +77,7 @@ public class FreeMarkerHandler {
             return false;
         }
 
-        List<TableColumnBean> columnList = QueryFactory.getColumnBeanList(table_name, database, true);
+        List<TableColumnBean> columnList = QueryFactory.getColumnBeanList(table_name, database, true , 0);
         if (Tools.isNull(columnList)) {
             throw new NoSuchElementException("没有查找到指定数据库的字段集合");
         }

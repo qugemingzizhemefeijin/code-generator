@@ -1,9 +1,5 @@
 package com.tigerjoys.np.cg.databases.generator;
 
-import com.tigerjoys.np.cg.databases.AbstractDataBase;
-import com.tigerjoys.np.cg.databases.CodeBuilderUtils;
-import com.tigerjoys.np.cg.databases.util.Tools;
-
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
@@ -11,6 +7,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import com.tigerjoys.np.cg.databases.AbstractDataBase;
+import com.tigerjoys.np.cg.databases.CodeBuilderUtils;
+import com.tigerjoys.np.cg.databases.util.Tools;
 
 public class QueryFactory {
 
@@ -21,9 +21,14 @@ public class QueryFactory {
     static {
         DATA_TYPE_MAP.put("datetime", "TIMESTAMP");
         DATA_TYPE_MAP.put("int", "INTEGER");
+        DATA_TYPE_MAP.put("tinytext", "LONGVARCHAR");
         DATA_TYPE_MAP.put("text", "LONGVARCHAR");
         DATA_TYPE_MAP.put("mediumtext", "LONGVARCHAR");
         DATA_TYPE_MAP.put("longtext", "LONGVARCHAR");
+        DATA_TYPE_MAP.put("tinyblob", "BLOB");
+        DATA_TYPE_MAP.put("blob", "BLOB");
+        DATA_TYPE_MAP.put("mediumblob", "BLOB");
+        DATA_TYPE_MAP.put("longblob", "BLOB");
 
         JAVA_OBJECT_TO_BASIC_TYPE.put("Double", "double");
         JAVA_OBJECT_TO_BASIC_TYPE.put("Fouble", "float");
@@ -31,7 +36,7 @@ public class QueryFactory {
         JAVA_OBJECT_TO_BASIC_TYPE.put("Long", "long");
     }
 
-    private static final String[] DATA_TYPE = new String[]{"bigint", "int", "datetime", "timestamp", "time", "smallint", "date", "varchar", "char", "text", "float", "double", "tinyint", "decimal"};
+    private static final String[] DATA_TYPE = new String[]{"bigint", "int", "datetime", "timestamp", "time", "smallint", "date", "varchar", "char", "tinytext", "text", "mediumtext", "longtext", "float", "double", "tinyint", "decimal", "tinyblob", "blob", "mediumblob", "longblob"};
 
     public static TableBean getTableBean(String table_name, AbstractDataBase database) {
         Connection co = null;
@@ -70,8 +75,9 @@ public class QueryFactory {
         return null;
     }
 
+    //ormType 0mybatis , 1jpa
     @SuppressWarnings("resource")
-    public static List<TableColumnBean> getColumnBeanList(String table_name, AbstractDataBase database, boolean primarySetLong) {
+    public static List<TableColumnBean> getColumnBeanList(String table_name, AbstractDataBase database, boolean primarySetLong , int ormType) {
         Connection co = null;
         Statement st = null;
         ResultSet rs = null;
@@ -102,7 +108,7 @@ public class QueryFactory {
                 bean.setIs_nullable("YES".equals(rs.getString(6).toUpperCase()) ? true : false);
                 bean.setData_type(rs.getString(7));
                 bean.setShow_data_type(getMyBatisJdbcType(rs.getString(7)));
-                bean.setJava_type(Tools.capFirst(getJavaType(rs.getString(7))));
+                bean.setJava_type(getJavaType(rs.getString(7)));
                 bean.setJava_basic_type(getJavaBasicType(bean.getJava_type()));
                 bean.setColumn_type(rs.getString(8));
                 bean.setLength(getColumnLength(rs.getString(8)));
@@ -110,6 +116,7 @@ public class QueryFactory {
                 bean.setColumn_comment(Tools.isNull(rs.getString(10)) ? rs.getString(3) : rs.getString(10));
                 bean.setExtra(rs.getString(11));
                 bean.setAuto_increment("auto_increment".equals(bean.getExtra()));
+                bean.setIslob(bean.getShow_data_type().equals("BLOB"));
 
                 list.add(bean);
             }
@@ -196,21 +203,23 @@ public class QueryFactory {
         checkDataType(data_type);
 
         if ("double".equals(data_type) || "float".equals(data_type)) {
-            return data_type;
+            return Tools.capFirst(data_type);
         }
 
-        if ("varchar".equals(data_type) || "text".equals(data_type) || "char".equals(data_type)) {
+        if ("varchar".equals(data_type) || "tinytext".equals(data_type) || "text".equals(data_type) || "mediumtext".equals(data_type) || "longtext".equals(data_type) || "char".equals(data_type)) {
             return "String";
         } else if ("int".equals(data_type) || "tinyint".equals(data_type) || "smallint".equals(data_type)) {
-            return "integer";
+            return "Integer";
         } else if ("bigint".equals(data_type)) {
-            return "long";
+            return "Long";
         } else if ("date".equals(data_type) || "datetime".equals(data_type) || "timestamp".equals(data_type)) {
             return "Date";
         } else if ("time".equals(data_type)) {
             return "Time";
         } else if ("decimal".equals(data_type)) {
-            return "double";
+            return "Double";
+        } else if("tinyblob".equals(data_type) || "blob".equals(data_type) || "mediumblob".equals(data_type) || "longblob".equals(data_type)) {//mybatis应该是blob,jpa是byte[]
+        	return "byte[]";
         }
 
         throw new RuntimeException(data_type + " no find java type");
