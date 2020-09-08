@@ -17,7 +17,7 @@
 		<!-- soft version -->
 		<freemarker_version>2.3.26-incubating</freemarker_version>
 		<guava_version>22.0</guava_version>
-		<mysql_version>5.1.40</mysql_version>
+		<mysql_version>8.0.16</mysql_version>
 		<logback_version>1.1.11</logback_version>
 		<commons_lang3_version>3.5</commons_lang3_version>
 		<commons_io_version>2.6</commons_io_version>
