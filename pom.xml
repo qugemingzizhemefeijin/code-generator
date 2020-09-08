@@ -21,7 +21,7 @@
 		<logback_version>1.1.11</logback_version>
 		<commons_lang3_version>3.5</commons_lang3_version>
 		<commons_io_version>2.6</commons_io_version>
-		<jackson_version>2.9.10.3</jackson_version>
+		<jackson_version>2.11.2</jackson_version>
 
 		<!-- Build args -->
 		<argline>-server -Xms64m -Xmx64m -XX:PermSize=64m -XX:MaxPermSize=64m</argline>
